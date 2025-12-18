@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -11,29 +13,29 @@ public class RecipeIngredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Menu item is required")
     @ManyToOne
     @JoinColumn(name = "menu_item_id", nullable = false)
     @JsonIgnore
     private MenuItem menuItem;
 
+    @NotNull(message = "Ingredient is required")
     @ManyToOne
     @JoinColumn(name = "ingredient_id", nullable = false)
     private Ingredient ingredient;
 
-    @Column(nullable = false)
+    @NotNull(message = "Quantity required is required")
+    @Positive(message = "Quantity required must be positive")
+    @Column(name = "quantity_required", nullable = false)
     private Double quantityRequired;
-
-    @Column(nullable = false)
-    private String unit; // e.g., "grams", "ml", "pieces"
 
     // Constructors
     public RecipeIngredient() {}
 
-    public RecipeIngredient(MenuItem menuItem, Ingredient ingredient, Double quantityRequired, String unit) {
+    public RecipeIngredient(MenuItem menuItem, Ingredient ingredient, Double quantityRequired) {
         this.menuItem = menuItem;
         this.ingredient = ingredient;
         this.quantityRequired = quantityRequired;
-        this.unit = unit;
     }
 
     // Getters and Setters
@@ -48,7 +50,4 @@ public class RecipeIngredient {
 
     public Double getQuantityRequired() { return quantityRequired; }
     public void setQuantityRequired(Double quantityRequired) { this.quantityRequired = quantityRequired; }
-
-    public String getUnit() { return unit; }
-    public void setUnit(String unit) { this.unit = unit; }
 }
