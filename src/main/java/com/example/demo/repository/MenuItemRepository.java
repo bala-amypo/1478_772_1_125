@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
     Optional<MenuItem> findByName(String name);
     boolean existsByName(String name);
-    List<MenuItem> findByCategory(String category);
-    List<MenuItem> findByPriceLessThanEqual(Double maxPrice);
+    List<MenuItem> findByIsAvailable(Boolean isAvailable);
+    List<MenuItem> findByNameContainingIgnoreCase(String name);
+    List<MenuItem> findByCategoriesName(String categoryName);
 }

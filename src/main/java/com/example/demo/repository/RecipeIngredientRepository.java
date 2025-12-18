@@ -9,7 +9,7 @@ import java.util.List;
 public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredient, Long> {
     List<RecipeIngredient> findByMenuItemId(Long menuItemId);
     List<RecipeIngredient> findByIngredientId(Long ingredientId);
-    List<RecipeIngredient> findByMenuItemIdAndIngredientId(Long menuItemId, Long ingredientId);
+    boolean existsByMenuItemIdAndIngredientId(Long menuItemId, Long ingredientId);
     void deleteByMenuItemId(Long menuItemId);
     void deleteByIngredientId(Long ingredientId);
 }
