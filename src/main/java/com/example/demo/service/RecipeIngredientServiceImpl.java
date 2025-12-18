@@ -46,8 +46,8 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
     public RecipeIngredient updateRecipeIngredient(Long id, RecipeIngredient recipeIngredientDetails) {
         RecipeIngredient recipeIngredient = getRecipeIngredientById(id);
         
+        // Only update quantityRequired (RecipeIngredient doesn't have unit field)
         recipeIngredient.setQuantityRequired(recipeIngredientDetails.getQuantityRequired());
-        recipeIngredient.setUnit(recipeIngredientDetails.getUnit());
         
         return recipeIngredientRepository.save(recipeIngredient);
     }

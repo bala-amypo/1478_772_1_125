@@ -5,7 +5,6 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +16,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<User> getAllUsers() {
@@ -44,8 +40,8 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("User with email '" + user.getEmail() + "' already exists");
         }
         
-        // Hash password before saving
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // For now, store password as plain text (remove this in production!)
+        // TODO: Add password encoding when Spring Security is configured
         return userRepository.save(user);
     }
 
@@ -64,7 +60,8 @@ public class UserServiceImpl implements UserService {
         
         // Only update password if provided
         if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+            // TODO: Add password encoding when Spring Security is configured
+            user.setPassword(userDetails.getPassword());
         }
         
         return userRepository.save(user);
@@ -80,7 +77,9 @@ public class UserServiceImpl implements UserService {
     public User authenticate(String email, String password) {
         User user = getUserByEmail(email);
         
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        // Simple password comparison (remove this in production!)
+        // TODO: Use password encoder when Spring Security is configured
+        if (!password.equals(user.getPassword())) {
             throw new BadRequestException("Invalid password");
         }
         
