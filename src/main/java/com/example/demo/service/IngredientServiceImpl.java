@@ -1,3 +1,4 @@
+
 package com.example.demo.service;
 
 import com.example.demo.entity.Ingredient;
@@ -5,10 +6,12 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IngredientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class IngredientServiceImpl implements IngredientService {
 
     @Autowired
@@ -22,7 +25,7 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public Ingredient getIngredientById(Long id) {
         return ingredientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient", "id", id));
     }
 
     @Override
@@ -35,7 +38,7 @@ public class IngredientServiceImpl implements IngredientService {
         Ingredient ingredient = getIngredientById(id);
         ingredient.setName(ingredientDetails.getName());
         ingredient.setQuantity(ingredientDetails.getQuantity());
-        
+        // Update other fields as needed
         return ingredientRepository.save(ingredient);
     }
 
@@ -45,3 +48,4 @@ public class IngredientServiceImpl implements IngredientService {
         ingredientRepository.delete(ingredient);
     }
 }
+EOF
