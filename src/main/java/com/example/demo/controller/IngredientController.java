@@ -1,12 +1,14 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Ingredient;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.service.IngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,23 +19,28 @@ public class IngredientController {
     private IngredientService ingredientService;
 
     @GetMapping
-    public List<Ingredient> getAllIngredients() {
-        return ingredientService.getAllIngredients();
+    public ResponseEntity<List<Ingredient>> getAllIngredients() {
+        List<Ingredient> ingredients = ingredientService.getAllIngredients();
+        return ResponseEntity.ok(ingredients);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Ingredient> getIngredientById(@PathVariable Long id) {
-        return ResponseEntity.ok(ingredientService.getIngredientById(id));
+        Ingredient ingredient = ingredientService.getIngredientById(id);
+        return ResponseEntity.ok(ingredient);
     }
 
     @PostMapping
-    public ResponseEntity<Ingredient> createIngredient(@RequestBody Ingredient ingredient) {
-        return new ResponseEntity<>(ingredientService.createIngredient(ingredient), HttpStatus.CREATED);
+    public ResponseEntity<Ingredient> createIngredient(@Valid @RequestBody Ingredient ingredient) {
+        Ingredient createdIngredient = ingredientService.createIngredient(ingredient);
+        return new ResponseEntity<>(createdIngredient, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Ingredient> updateIngredient(@PathVariable Long id, @RequestBody Ingredient ingredient) {
-        return ResponseEntity.ok(ingredientService.updateIngredient(id, ingredient));
+    public ResponseEntity<Ingredient> updateIngredient(@PathVariable Long id, 
+                                                     @Valid @RequestBody Ingredient ingredient) {
+        Ingredient updatedIngredient = ingredientService.updateIngredient(id, ingredient);
+        return ResponseEntity.ok(updatedIngredient);
     }
 
     @DeleteMapping("/{id}")
