@@ -39,9 +39,6 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new BadRequestException("User with email '" + user.getEmail() + "' already exists");
         }
-        
-        // For now, store password as plain text (remove this in production!)
-        // TODO: Add password encoding when Spring Security is configured
         return userRepository.save(user);
     }
 
@@ -58,9 +55,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDetails.getEmail());
         user.setRole(userDetails.getRole());
         
-        // Only update password if provided
         if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
-            // TODO: Add password encoding when Spring Security is configured
             user.setPassword(userDetails.getPassword());
         }
         
@@ -77,8 +72,6 @@ public class UserServiceImpl implements UserService {
     public User authenticate(String email, String password) {
         User user = getUserByEmail(email);
         
-        // Simple password comparison (remove this in production!)
-        // TODO: Use password encoder when Spring Security is configured
         if (!password.equals(user.getPassword())) {
             throw new BadRequestException("Invalid password");
         }

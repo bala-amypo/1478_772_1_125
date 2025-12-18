@@ -58,7 +58,6 @@ public class ProfitCalculationRecordServiceImpl implements ProfitCalculationReco
         MenuItem menuItem = menuItemRepository.findById(menuItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("MenuItem", "id", menuItemId));
         
-        // Calculate total cost from recipe ingredients
         List<RecipeIngredient> recipeIngredients = recipeIngredientRepository.findByMenuItemId(menuItemId);
         
         BigDecimal totalCost = BigDecimal.ZERO;
@@ -72,13 +71,11 @@ public class ProfitCalculationRecordServiceImpl implements ProfitCalculationReco
             }
         }
         
-        // Calculate profit margin
         BigDecimal sellingPrice = menuItem.getPrice();
         BigDecimal profit = sellingPrice.subtract(totalCost);
         BigDecimal profitMargin = profit.divide(sellingPrice, 4, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(100));
         
-        // Create and save record
         ProfitCalculationRecord record = new ProfitCalculationRecord();
         record.setMenuItem(menuItem);
         record.setTotalCost(totalCost);
