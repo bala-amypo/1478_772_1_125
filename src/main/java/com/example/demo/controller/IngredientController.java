@@ -1,97 +1,44 @@
-package com.example.demo.service;
+package com.example.demo.controller;
 
 import com.example.demo.entity.Ingredient;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.NotFoundException;
-import com.example.demo.repository.IngredientRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.example.demo.service.IngredientService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-@Service
-@Transactional
-public class IngredientServiceImpl implements IngredientService {
-    
-    private final IngredientRepository ingredientRepository;
+@RestController
+@RequestMapping("/api/ingredients")
+public class IngredientController {
 
-    // Constructor injection as required
-    public IngredientServiceImpl(IngredientRepository ingredientRepository) {
-        this.ingredientRepository = ingredientRepository;
-    }
+    @Autowired
+    private IngredientService ingredientService;
 
-    @Override
-    public Ingredient createIngredient(Ingredient ingredient) {
-        // Validate unique name
-        if (ingredientRepository.existsByName(ingredient.getName())) {
-            throw new BadRequestException("Ingredient with name '" + ingredient.getName() + "' already exists");
-        }
-        
-        // Validate cost
-        if (ingredient.getCostPerUnit() == null || ingredient.getCostPerUnit().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new BadRequestException("Cost per unit must be greater than 0");
-        }
-        
-        // Ensure active defaults to true
-        if (ingredient.getActive() == null) {
-            ingredient.setActive(true);
-        }
-        
-        return ingredientRepository.save(ingredient);
-    }
-
-    @Override
-    public Ingredient updateIngredient(Long id, Ingredient ingredient) {
-        Ingredient existingIngredient = ingredientRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("Ingredient not found with id: " + id));
-        
-        // Check if name is being changed and if new name already exists
-        if (!existingIngredient.getName().equals(ingredient.getName()) 
-                && ingredientRepository.existsByName(ingredient.getName())) {
-            throw new BadRequestException("Ingredient with name '" + ingredient.getName() + "' already exists");
-        }
-        
-        // Validate cost
-        if (ingredient.getCostPerUnit() == null || ingredient.getCostPerUnit().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new BadRequestException("Cost per unit must be greater than 0");
-        }
-        
-        existingIngredient.setName(ingredient.getName());
-        existingIngredient.setUnit(ingredient.getUnit());
-        existingIngredient.setCostPerUnit(ingredient.getCostPerUnit());
-        
-        // Note: We don't update 'active' status here - use toggle method instead
-        
-        return ingredientRepository.save(existingIngredient);
-    }
-
-    @Override
-    public Ingredient getIngredientById(Long id) {
-        return ingredientRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("Ingredient not found with id: " + id));
-    }
-
-    @Override
+    @GetMapping
     public List<Ingredient> getAllIngredients() {
-        return ingredientRepository.findAll();
+        return ingredientService.getAllIngredients();
     }
 
-    @Override
-    public Ingredient toggleIngredientStatus(Long id) {
-        Ingredient ingredient = ingredientRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("Ingredient not found with id: " + id));
-        
-        ingredient.setActive(!ingredient.getActive());
-        return ingredientRepository.save(ingredient);
+    @GetMapping("/{id}")
+    public ResponseEntity<Ingredient> getIngredientById(@PathVariable Long id) {
+        return ResponseEntity.ok(ingredientService.getIngredientById(id));
     }
 
-    @Override
-    public Long getTotalUsageByIngredient(Long ingredientId) {
-        if (!ingredientRepository.existsById(ingredientId)) {
-            throw new NotFoundException("Ingredient not found with id: " + ingredientId);
-        }
-        
-        return ingredientRepository.getTotalUsageByIngredient(ingredientId);
+    @PostMapping
+    public ResponseEntity<Ingredient> createIngredient(@RequestBody Ingredient ingredient) {
+        return new ResponseEntity<>(ingredientService.createIngredient(ingredient), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Ingredient> updateIngredient(@PathVariable Long id, @RequestBody Ingredient ingredient) {
+        return ResponseEntity.ok(ingredientService.updateIngredient(id, ingredient));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) {
+        ingredientService.deleteIngredient(id);
+        return ResponseEntity.noContent().build();
     }
 }

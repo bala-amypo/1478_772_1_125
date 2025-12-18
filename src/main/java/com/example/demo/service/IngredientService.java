@@ -4,16 +4,9 @@ import com.example.demo.entity.Ingredient;
 import java.util.List;
 
 public interface IngredientService {
-    
-    Ingredient createIngredient(Ingredient ingredient);
-    
-    Ingredient updateIngredient(Long id, Ingredient ingredient);
-    
-    Ingredient getIngredientById(Long id);
-    
     List<Ingredient> getAllIngredients();
-    
-    Ingredient toggleIngredientStatus(Long id);
-    
-    Long getTotalUsageByIngredient(Long ingredientId);
+    Ingredient getIngredientById(Long id);
+    Ingredient createIngredient(Ingredient ingredient);
+    Ingredient updateIngredient(Long id, Ingredient ingredient);
+    void deleteIngredient(Long id);
 }
