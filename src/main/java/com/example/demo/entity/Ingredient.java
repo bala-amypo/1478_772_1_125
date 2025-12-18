@@ -1,6 +1,9 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ingredients")
@@ -10,11 +13,16 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     private Double quantity;
     private String unit;
+
+    // Relationship with RecipeIngredient
+    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // To prevent infinite recursion in JSON serialization
+    private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     // Constructors
     public Ingredient() {}
@@ -37,4 +45,24 @@ public class Ingredient {
 
     public String getUnit() { return unit; }
     public void setUnit(String unit) { this.unit = unit; }
+
+    public List<RecipeIngredient> getRecipeIngredients() { 
+        return recipeIngredients; 
+    }
+    
+    public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) { 
+        this.recipeIngredients = recipeIngredients; 
+    }
+    
+    // Helper method to add RecipeIngredient
+    public void addRecipeIngredient(RecipeIngredient recipeIngredient) {
+        recipeIngredients.add(recipeIngredient);
+        recipeIngredient.setIngredient(this);
+    }
+    
+    // Helper method to remove RecipeIngredient
+    public void removeRecipeIngredient(RecipeIngredient recipeIngredient) {
+        recipeIngredients.remove(recipeIngredient);
+        recipeIngredient.setIngredient(null);
+    }
 }

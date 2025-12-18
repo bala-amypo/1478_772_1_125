@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +22,10 @@ public class MenuItem {
     private Double price;
 
     @Column(nullable = false)
-    private String category; // e.g., "Appetizer", "Main Course", "Dessert"
+    private String category;
 
     @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     // Constructors
@@ -57,7 +59,7 @@ public class MenuItem {
         this.recipeIngredients = recipeIngredients; 
     }
     
-    // Helper method
+    // Helper methods
     public void addRecipeIngredient(RecipeIngredient recipeIngredient) {
         recipeIngredients.add(recipeIngredient);
         recipeIngredient.setMenuItem(this);
