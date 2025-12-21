@@ -101,25 +101,16 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
         return profitCalculationRecordRepository.findAll();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<ProfitCalculationRecord> findRecordsWithMarginBetween(Double min, Double max) {
-        if (min == null || max == null || min > max) {
-            throw new BadRequestException("Invalid margin range");
-        }
-
-        Specification<ProfitCalculationRecord> spec = new Specification<ProfitCalculationRecord>() {
-            @Override
-            public Predicate toPredicate(Root<ProfitCalculationRecord> root, 
-                                       CriteriaQuery<?> query, 
-                                       CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicates = new ArrayList<>();
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("profitMargin"), min));
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("profitMargin"), max));
-                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-            }
-        };
-
-        return profitCalculationRecordRepository.findAll(spec);
+   @Override
+@Transactional(readOnly = true)
+public List<ProfitCalculationRecord> findRecordsWithMarginBetween(Double min, Double max) {
+    if (min == null || max == null || min > max) {
+        throw new BadRequestException("Invalid margin range");
     }
+    
+    // Simple implementation - get all and filter
+    List<ProfitCalculationRecord> allRecords = profitCalculationRecordRepository.findAll();
+    return allRecords.stream()
+            .filter(record -> record.getProfitMargin() >= min && record.getProfitMargin() <= max)
+            .collect(Collectors.toList());
 }
