@@ -1,9 +1,6 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,9 +11,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "categories")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Category {
     @Id
@@ -41,4 +35,34 @@ public class Category {
 
     @ManyToMany(mappedBy = "categories")
     private Set<MenuItem> menuItems = new HashSet<>();
+
+    // Constructors
+    public Category() {}
+    
+    public Category(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
+    
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    
+    public Set<MenuItem> getMenuItems() { return menuItems; }
+    public void setMenuItems(Set<MenuItem> menuItems) { this.menuItems = menuItems; }
 }

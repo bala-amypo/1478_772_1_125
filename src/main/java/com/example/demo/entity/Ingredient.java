@@ -1,9 +1,6 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,9 +10,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ingredients")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Ingredient {
     @Id
@@ -41,4 +35,35 @@ public class Ingredient {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // Constructors
+    public Ingredient() {}
+    
+    public Ingredient(String name, String unit, BigDecimal costPerUnit) {
+        this.name = name;
+        this.unit = unit;
+        this.costPerUnit = costPerUnit;
+    }
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    
+    public String getUnit() { return unit; }
+    public void setUnit(String unit) { this.unit = unit; }
+    
+    public BigDecimal getCostPerUnit() { return costPerUnit; }
+    public void setCostPerUnit(BigDecimal costPerUnit) { this.costPerUnit = costPerUnit; }
+    
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
+    
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }
