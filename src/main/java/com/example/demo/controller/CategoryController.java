@@ -2,8 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Category;
 import com.example.demo.service.CategoryService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,16 +11,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
+    private final CategoryService categoryService;
 
-    @Autowired
-    private CategoryService categoryService;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+        Category created = categoryService.createCategory(category);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
 
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategories(@RequestParam(required = false) Boolean active) {
-        if (active != null) {
-            return ResponseEntity.ok(categoryService.getActiveCategories());
-        }
-        return ResponseEntity.ok(categoryService.getAllCategories());
+    public ResponseEntity<List<Category>> getAllCategories() {
+        List<Category> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/{id}")
@@ -31,28 +35,15 @@ public class CategoryController {
         return ResponseEntity.ok(category);
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<Category> getCategoryByName(@PathVariable String name) {
-        Category category = categoryService.getCategoryByName(name);
-        return ResponseEntity.ok(category);
-    }
-
-    @PostMapping
-    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) {
-        Category createdCategory = categoryService.createCategory(category);
-        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
-    }
-
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id, 
-                                                   @Valid @RequestBody Category category) {
-        Category updatedCategory = categoryService.updateCategory(id, category);
-        return ResponseEntity.ok(updatedCategory);
+    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
+        Category updated = categoryService.updateCategory(id, category);
+        return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<Void> deactivateCategory(@PathVariable Long id) {
+        categoryService.deactivateCategory(id);
+        return ResponseEntity.ok().build();
     }
 }

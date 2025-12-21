@@ -1,22 +1,27 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Ingredient;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.service.IngredientService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/ingredients")
 public class IngredientController {
+    private final IngredientService ingredientService;
 
-    @Autowired
-    private IngredientService ingredientService;
+    public IngredientController(IngredientService ingredientService) {
+        this.ingredientService = ingredientService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Ingredient> createIngredient(@RequestBody Ingredient ingredient) {
+        Ingredient created = ingredientService.createIngredient(ingredient);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
 
     @GetMapping
     public ResponseEntity<List<Ingredient>> getAllIngredients() {
@@ -30,22 +35,15 @@ public class IngredientController {
         return ResponseEntity.ok(ingredient);
     }
 
-    @PostMapping
-    public ResponseEntity<Ingredient> createIngredient(@Valid @RequestBody Ingredient ingredient) {
-        Ingredient createdIngredient = ingredientService.createIngredient(ingredient);
-        return new ResponseEntity<>(createdIngredient, HttpStatus.CREATED);
-    }
-
     @PutMapping("/{id}")
-    public ResponseEntity<Ingredient> updateIngredient(@PathVariable Long id, 
-                                                     @Valid @RequestBody Ingredient ingredient) {
-        Ingredient updatedIngredient = ingredientService.updateIngredient(id, ingredient);
-        return ResponseEntity.ok(updatedIngredient);
+    public ResponseEntity<Ingredient> updateIngredient(@PathVariable Long id, @RequestBody Ingredient ingredient) {
+        Ingredient updated = ingredientService.updateIngredient(id, ingredient);
+        return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) {
-        ingredientService.deleteIngredient(id);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<Void> deactivateIngredient(@PathVariable Long id) {
+        ingredientService.deactivateIngredient(id);
+        return ResponseEntity.ok().build();
     }
 }
