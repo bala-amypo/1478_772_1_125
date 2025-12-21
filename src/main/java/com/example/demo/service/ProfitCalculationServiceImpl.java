@@ -11,22 +11,18 @@ import com.example.demo.repository.MenuItemRepository;
 import com.example.demo.repository.ProfitCalculationRecordRepository;
 import com.example.demo.repository.RecipeIngredientRepository;
 import com.example.demo.service.ProfitCalculationService;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class ProfitCalculationServiceImpl implements ProfitCalculationService {
+
     private final MenuItemRepository menuItemRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final IngredientRepository ingredientRepository;
@@ -44,15 +40,18 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
 
     @Override
     public ProfitCalculationRecord calculateProfit(Long menuItemId) {
+        // Get menu item
         MenuItem menuItem = menuItemRepository.findById(menuItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Menu item not found with id: " + menuItemId));
 
+        // Get recipe ingredients
         List<RecipeIngredient> recipeIngredients = recipeIngredientRepository.findByMenuItemId(menuItemId);
         
         if (recipeIngredients.isEmpty()) {
             throw new BadRequestException("Cannot calculate profit for menu item without recipe ingredients");
         }
 
+        // Calculate total cost
         BigDecimal totalCost = BigDecimal.ZERO;
         for (RecipeIngredient ri : recipeIngredients) {
             Ingredient ingredient = ri.getIngredient();
@@ -61,6 +60,7 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
             totalCost = totalCost.add(ingredientCost);
         }
 
+        // Calculate profit margin (percentage)
         BigDecimal sellingPrice = menuItem.getSellingPrice();
         if (sellingPrice.compareTo(BigDecimal.ZERO) <= 0) {
             throw new BadRequestException("Invalid selling price for menu item");
@@ -71,6 +71,7 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
                 .multiply(BigDecimal.valueOf(100))
                 .doubleValue();
 
+        // Create and save record
         ProfitCalculationRecord record = new ProfitCalculationRecord();
         record.setMenuItem(menuItem);
         record.setTotalCost(totalCost);
@@ -101,16 +102,21 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
         return profitCalculationRecordRepository.findAll();
     }
 
-   @Override
-@Transactional(readOnly = true)
-public List<ProfitCalculationRecord> findRecordsWithMarginBetween(Double min, Double max) {
-    if (min == null || max == null || min > max) {
-        throw new BadRequestException("Invalid margin range");
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProfitCalculationRecord> findRecordsWithMarginBetween(Double min, Double max) {
+        if (min == null || max == null || min > max) {
+            throw new BadRequestException("Invalid margin range");
+        }
+        
+        
+        List<ProfitCalculationRecord> allRecords = profitCalculationRecordRepository.findAll();
+        
+        return allRecords.stream()
+                .filter(record -> {
+                    Double margin = record.getProfitMargin();
+                    return margin != null && margin >= min && margin <= max;
+                })
+                .collect(Collectors.toList());
     }
-    
-    // Simple implementation - get all and filter
-    List<ProfitCalculationRecord> allRecords = profitCalculationRecordRepository.findAll();
-    return allRecords.stream()
-            .filter(record -> record.getProfitMargin() >= min && record.getProfitMargin() <= max)
-            .collect(Collectors.toList());
 }
