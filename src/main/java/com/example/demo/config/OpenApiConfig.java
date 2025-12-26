@@ -17,21 +17,14 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                // API Information
                 .info(new Info()
                         .title("Menu Profitability Calculator API")
                         .version("1.0")
                         .description("API for managing menu items and calculating profitability"))
-
-                // Server configuration
                 .servers(List.of(
-                        new Server().url("https://9003.pro604cr.amypo.ai/swagger-ui/index.html")
+                        new Server().url("/")
                 ))
-
-                // Security requirement
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
-
-                // Security scheme definition
                 .components(new Components()
                         .addSecuritySchemes("bearerAuth",
                                 new SecurityScheme()

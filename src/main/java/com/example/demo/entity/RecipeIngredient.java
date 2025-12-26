@@ -17,10 +17,9 @@ public class RecipeIngredient {
     @JoinColumn(name = "ingredient_id", nullable = false)
     private Ingredient ingredient;
     
-    @Column(nullable = false)
-    private Double quantity;
+    @Column(name = "quantity_required", nullable = false)
+    private Double quantityRequired;
     
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -30,6 +29,6 @@ public class RecipeIngredient {
     public Ingredient getIngredient() { return ingredient; }
     public void setIngredient(Ingredient ingredient) { this.ingredient = ingredient; }
     
-    public Double getQuantity() { return quantity; }
-    public void setQuantity(Double quantity) { this.quantity = quantity; }
+    public Double getQuantityRequired() { return quantityRequired; }
+    public void setQuantityRequired(Double quantityRequired) { this.quantityRequired = quantityRequired; }
 }

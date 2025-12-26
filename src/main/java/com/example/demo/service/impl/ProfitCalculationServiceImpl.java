@@ -45,7 +45,7 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
         BigDecimal totalCost = BigDecimal.ZERO;
         for (RecipeIngredient ri : recipeIngredients) {
             BigDecimal ingredientCost = ri.getIngredient().getCostPerUnit()
-                .multiply(BigDecimal.valueOf(ri.getQuantity()));
+                .multiply(BigDecimal.valueOf(ri.getQuantityRequired()));
             totalCost = totalCost.add(ingredientCost);
         }
         
@@ -79,7 +79,6 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
     
     @Override
     public List<ProfitCalculationRecord> findRecordsWithMarginBetween(Double min, Double max) {
-        // This method is used in tests with spy - implementation can be simple
         return profitCalculationRecordRepository.findAll().stream()
             .filter(record -> record.getProfitMargin() >= min && record.getProfitMargin() <= max)
             .toList();
