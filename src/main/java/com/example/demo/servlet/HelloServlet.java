@@ -1,26 +1,26 @@
 package com.example.demo.servlet;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "helloServlet", urlPatterns = "/hello-servlet")
+@WebServlet("/hello-servlet")
 public class HelloServlet extends HttpServlet {
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
         
-        PrintWriter out = response.getWriter();
-        out.println("<html><body>");
-        out.println("<h1>Hello from Servlet!</h1>");
-        out.println("<p>Menu Profitability Calculator is running on port 9001</p>");
-        out.println("<p>MySQL Database: menu_profitability</p>");
-        out.println("<p>Swagger UI: <a href='/swagger-ui/index.html'>/swagger-ui/index.html</a></p>");
-        out.println("</body></html>");
+        if (response == null) {
+            throw new ServletException("Response cannot be null");
+        }
+        
+        response.setContentType("text/plain");
+        PrintWriter writer = response.getWriter();
+        writer.write("Hello from servlet");
     }
 }
