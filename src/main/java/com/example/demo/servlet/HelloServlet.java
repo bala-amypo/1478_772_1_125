@@ -1,26 +1,24 @@
 package com.example.demo.servlet;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/hello-servlet")
+@WebServlet(name = "helloServlet", urlPatterns = "/hello-servlet")
 public class HelloServlet extends HttpServlet {
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/html");
         
-        if (response == null) {
-            throw new ServletException("Response cannot be null");
-        }
-        
-        response.setContentType("text/plain");
-        PrintWriter writer = response.getWriter();
-        writer.write("Hello from servlet");
+        PrintWriter out = response.getWriter();
+        out.println("<html><body>");
+        out.println("<h1>Hello from Servlet!</h1>");
+        out.println("<p>Menu Profitability Calculator is running.</p>");
+        out.println("</body></html>");
     }
 }
