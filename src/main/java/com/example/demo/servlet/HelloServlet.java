@@ -18,7 +18,9 @@ public class HelloServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         out.println("<html><body>");
         out.println("<h1>Hello from Servlet!</h1>");
-        out.println("<p>Menu Profitability Calculator is running.</p>");
+        out.println("<p>Menu Profitability Calculator is running on port 9001</p>");
+        out.println("<p>MySQL Database: menu_profitability</p>");
+        out.println("<p>Swagger UI: <a href='/swagger-ui/index.html'>/swagger-ui/index.html</a></p>");
         out.println("</body></html>");
     }
 }
