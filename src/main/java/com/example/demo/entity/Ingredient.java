@@ -20,23 +20,29 @@ public class Ingredient {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     
     @NotBlank
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
     
     @NotBlank
+    @Column(name = "unit")
     private String unit;
     
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false, message = "Cost per unit must be greater than 0")
+    @Column(name = "cost_per_unit", precision = 10, scale = 2)
     private BigDecimal costPerUnit;
     
+    @Column(name = "active")
     private boolean active = true;
     
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
     
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
     @PrePersist

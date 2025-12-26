@@ -16,6 +16,7 @@ public class RecipeIngredient {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     
     @NotNull
@@ -30,5 +31,6 @@ public class RecipeIngredient {
     
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false, message = "Quantity must be greater than 0")
+    @Column(name = "quantity_required")
     private Double quantityRequired;
 }

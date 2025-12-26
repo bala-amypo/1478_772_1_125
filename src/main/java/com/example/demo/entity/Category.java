@@ -18,14 +18,17 @@ public class Category {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     
     @NotBlank
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
     
+    @Column(name = "description")
     private String description;
     
+    @Column(name = "active")
     private boolean active = true;
     
     @ManyToMany(mappedBy = "categories")

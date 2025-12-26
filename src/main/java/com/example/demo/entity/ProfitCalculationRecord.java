@@ -17,18 +17,20 @@ public class ProfitCalculationRecord {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     
     @ManyToOne
     @JoinColumn(name = "menu_item_id", nullable = false)
     private MenuItem menuItem;
     
-    @Column(nullable = false)
+    @Column(name = "total_cost", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalCost;
     
-    @Column(nullable = false)
-    private Double profitMargin; // Percentage
+    @Column(name = "profit_margin", nullable = false)
+    private Double profitMargin;
     
+    @Column(name = "calculated_at")
     private LocalDateTime calculatedAt;
     
     @PrePersist

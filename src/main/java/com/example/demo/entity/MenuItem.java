@@ -22,22 +22,28 @@ public class MenuItem {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     
     @NotBlank
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
     
+    @Column(name = "description")
     private String description;
     
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false, message = "Selling price must be greater than 0")
+    @Column(name = "selling_price", precision = 10, scale = 2)
     private BigDecimal sellingPrice;
     
+    @Column(name = "active")
     private boolean active = true;
     
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
     
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
     @ManyToMany
