@@ -1,9 +1,12 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.entity.User;
+import com.example.demo.entity.RecipeIngredient;
+import java.util.List;
 
-public interface UserService {
-    User register(RegisterRequest request);
-    User findByEmailIgnoreCase(String email);
+public interface RecipeIngredientService {
+    RecipeIngredient addIngredientToMenuItem(RecipeIngredient recipeIngredient);
+    RecipeIngredient updateRecipeIngredient(Long id, Double quantity);
+    List<RecipeIngredient> getIngredientsByMenuItem(Long menuItemId);
+    void removeIngredientFromRecipe(Long id);
+    Double getTotalQuantityOfIngredient(Long ingredientId);
 }
