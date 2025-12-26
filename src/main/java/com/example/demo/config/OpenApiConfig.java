@@ -25,7 +25,7 @@ public class OpenApiConfig {
 
                 // Server configuration
                 .servers(List.of(
-                        new Server().url("https://9169.32procr.amypo.ai/swagger-ui/index.html")
+                        new Server().url("https://9003.pro604cr.amypo.ai/swagger-ui/index.html")
                 ))
 
                 // Security requirement
