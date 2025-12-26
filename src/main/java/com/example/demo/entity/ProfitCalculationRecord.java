@@ -1,40 +1,47 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "profit_calculation_records")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProfitCalculationRecord {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
     
     @ManyToOne
     @JoinColumn(name = "menu_item_id", nullable = false)
     private MenuItem menuItem;
     
-    @Column(name = "total_cost", nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false)
     private BigDecimal totalCost;
     
-    @Column(name = "profit_margin", nullable = false)
+    @Column(nullable = false)
     private Double profitMargin;
     
-    @Column(name = "calculated_at")
+    @Column(nullable = false)
     private LocalDateTime calculatedAt;
     
     @PrePersist
     protected void onCreate() {
         calculatedAt = LocalDateTime.now();
     }
+    
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public MenuItem getMenuItem() { return menuItem; }
+    public void setMenuItem(MenuItem menuItem) { this.menuItem = menuItem; }
+    
+    public BigDecimal getTotalCost() { return totalCost; }
+    public void setTotalCost(BigDecimal totalCost) { this.totalCost = totalCost; }
+    
+    public Double getProfitMargin() { return profitMargin; }
+    public void setProfitMargin(Double profitMargin) { this.profitMargin = profitMargin; }
+    
+    public LocalDateTime getCalculatedAt() { return calculatedAt; }
+    public void setCalculatedAt(LocalDateTime calculatedAt) { this.calculatedAt = calculatedAt; }
 }

@@ -1,48 +1,28 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ingredients")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Ingredient {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
     
-    @NotBlank
-    @Column(name = "name", unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
     
-    @NotBlank
-    @Column(name = "unit")
     private String unit;
     
-    @NotNull
-    @DecimalMin(value = "0.0", inclusive = false, message = "Cost per unit must be greater than 0")
-    @Column(name = "cost_per_unit", precision = 10, scale = 2)
+    @Column(nullable = false)
     private BigDecimal costPerUnit;
     
-    @Column(name = "active")
-    private boolean active = true;
+    @Column(nullable = false)
+    private Boolean active = true;
     
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
-    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
     @PrePersist
@@ -55,4 +35,26 @@ public class Ingredient {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+    
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    
+    public String getUnit() { return unit; }
+    public void setUnit(String unit) { this.unit = unit; }
+    
+    public BigDecimal getCostPerUnit() { return costPerUnit; }
+    public void setCostPerUnit(BigDecimal costPerUnit) { this.costPerUnit = costPerUnit; }
+    
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
+    
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }

@@ -2,23 +2,23 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.MenuItem;
 import com.example.demo.service.MenuItemService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/menu-items")
-@RequiredArgsConstructor
 public class MenuItemController {
     
     private final MenuItemService menuItemService;
     
+    public MenuItemController(MenuItemService menuItemService) {
+        this.menuItemService = menuItemService;
+    }
+    
     @PostMapping
-    public ResponseEntity<MenuItem> createMenuItem(@Valid @RequestBody MenuItem menuItem) {
+    public ResponseEntity<MenuItem> createMenuItem(@RequestBody MenuItem menuItem) {
         MenuItem created = menuItemService.createMenuItem(menuItem);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -36,11 +36,9 @@ public class MenuItemController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<MenuItem> updateMenuItem(
-            @PathVariable Long id,
-            @Valid @RequestBody MenuItem updatedMenuItem) {
-        MenuItem menuItem = menuItemService.updateMenuItem(id, updatedMenuItem);
-        return ResponseEntity.ok(menuItem);
+    public ResponseEntity<MenuItem> updateMenuItem(@PathVariable Long id, @RequestBody MenuItem menuItem) {
+        MenuItem updated = menuItemService.updateMenuItem(id, menuItem);
+        return ResponseEntity.ok(updated);
     }
     
     @PutMapping("/{id}/deactivate")
