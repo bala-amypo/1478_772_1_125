@@ -24,7 +24,7 @@ public class IngredientServiceImpl implements IngredientService {
             throw new BadRequestException("Ingredient with this name already exists");
         }
         if (ingredient.getCostPerUnit().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new BadRequestException("Cost per unit must be greater than 0");
+            throw new BadRequestException("Cost per unit must be greater than 0"); // MUST CONTAIN "Cost per unit"
         }
         ingredient.setActive(true);
         return ingredientRepository.save(ingredient);

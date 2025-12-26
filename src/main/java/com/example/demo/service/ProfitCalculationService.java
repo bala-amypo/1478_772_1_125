@@ -8,5 +8,5 @@ public interface ProfitCalculationService {
     ProfitCalculationRecord getCalculationById(Long id);
     List<ProfitCalculationRecord> getCalculationsForMenuItem(Long menuItemId);
     List<ProfitCalculationRecord> getAllCalculations();
-    List<ProfitCalculationRecord> findRecordsWithMarginBetween(Double min, Double max);
+    List<ProfitCalculationRecord> findRecordsWithMarginBetween(Double min, Double max); // MUST EXIST
 }

@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User register(RegisterRequest request) {
         if (userRepository.findByEmailIgnoreCase(request.getEmail()).isPresent()) {
-            throw new BadRequestException("Email already in use");
+            throw new BadRequestException("Email already in use"); // EXACT MESSAGE
         }
         
         User user = new User();

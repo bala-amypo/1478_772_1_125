@@ -20,46 +20,19 @@ public class RecipeIngredient {
     @Column(name = "quantity_required", nullable = false)
     private Double quantityRequired;
     
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public MenuItem getMenuItem() { return menuItem; }
+    public void setMenuItem(MenuItem menuItem) { this.menuItem = menuItem; }
     
-    public MenuItem getMenuItem() {
-        return menuItem;
-    }
+    public Ingredient getIngredient() { return ingredient; }
+    public void setIngredient(Ingredient ingredient) { this.ingredient = ingredient; }
     
-    public void setMenuItem(MenuItem menuItem) {
-        this.menuItem = menuItem;
-    }
-    
-    public Ingredient getIngredient() {
-        return ingredient;
-    }
-    
-    public void setIngredient(Ingredient ingredient) {
-        this.ingredient = ingredient;
-    }
-    
-    public Double getQuantityRequired() {
-        return quantityRequired;
-    }
-    
-    public void setQuantityRequired(Double quantityRequired) {
-        this.quantityRequired = quantityRequired;
-    }
+    public Double getQuantityRequired() { return quantityRequired; }
+    public void setQuantityRequired(Double quantityRequired) { this.quantityRequired = quantityRequired; }
     
     // COMPATIBILITY METHODS FOR TESTS
-    // Tests expect getQuantity()/setQuantity() but we have quantityRequired
-    public Double getQuantity() {
-        return this.quantityRequired;
-    }
-    
-    public void setQuantity(Double quantity) {
-        this.quantityRequired = quantity;
-    }
+    public Double getQuantity() { return this.quantityRequired; }
+    public void setQuantity(Double quantity) { this.quantityRequired = quantity; }
 }
