@@ -38,7 +38,6 @@ public class MenuItemServiceImpl implements MenuItemService {
             throw new BadRequestException("Selling price must be greater than 0");
         }
         
-        // Validate categories
         if (menuItem.getCategories() != null && !menuItem.getCategories().isEmpty()) {
             Set<Category> validCategories = new HashSet<>();
             for (Category category : menuItem.getCategories()) {
@@ -70,7 +69,6 @@ public class MenuItemServiceImpl implements MenuItemService {
         existing.setSellingPrice(updated.getSellingPrice());
         existing.setActive(updated.getActive());
         
-        // Update categories
         if (updated.getCategories() != null) {
             Set<Category> validCategories = new HashSet<>();
             for (Category category : updated.getCategories()) {

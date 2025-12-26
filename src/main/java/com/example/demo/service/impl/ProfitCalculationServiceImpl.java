@@ -12,6 +12,7 @@ import com.example.demo.repository.RecipeIngredientRepository;
 import com.example.demo.service.ProfitCalculationService;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -50,7 +51,7 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
         }
         
         BigDecimal profit = menuItem.getSellingPrice().subtract(totalCost);
-        Double profitMargin = profit.divide(menuItem.getSellingPrice(), 4, BigDecimal.ROUND_HALF_UP)
+        Double profitMargin = profit.divide(menuItem.getSellingPrice(), 4, RoundingMode.HALF_UP)
             .multiply(BigDecimal.valueOf(100)).doubleValue();
         
         ProfitCalculationRecord record = new ProfitCalculationRecord();
