@@ -29,7 +29,7 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
     
     @Override
     public RecipeIngredient addIngredientToMenuItem(RecipeIngredient recipeIngredient) {
-        if (recipeIngredient.getQuantityRequired() <= 0) {
+        if (recipeIngredient.getQuantity() <= 0) {
             throw new BadRequestException("Quantity must be greater than 0");
         }
         
@@ -54,7 +54,7 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
             throw new BadRequestException("Quantity must be greater than 0");
         }
         
-        existing.setQuantityRequired(quantity);
+        existing.setQuantity(quantity);
         return recipeIngredientRepository.save(existing);
     }
     

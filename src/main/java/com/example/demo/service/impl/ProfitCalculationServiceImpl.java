@@ -12,7 +12,6 @@ import com.example.demo.repository.RecipeIngredientRepository;
 import com.example.demo.service.ProfitCalculationService;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -46,12 +45,12 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
         BigDecimal totalCost = BigDecimal.ZERO;
         for (RecipeIngredient ri : recipeIngredients) {
             BigDecimal ingredientCost = ri.getIngredient().getCostPerUnit()
-                .multiply(BigDecimal.valueOf(ri.getQuantityRequired()));
+                .multiply(BigDecimal.valueOf(ri.getQuantity()));
             totalCost = totalCost.add(ingredientCost);
         }
         
         BigDecimal profit = menuItem.getSellingPrice().subtract(totalCost);
-        Double profitMargin = profit.divide(menuItem.getSellingPrice(), 4, RoundingMode.HALF_UP)
+        Double profitMargin = profit.divide(menuItem.getSellingPrice(), 4, BigDecimal.ROUND_HALF_UP)
             .multiply(BigDecimal.valueOf(100)).doubleValue();
         
         ProfitCalculationRecord record = new ProfitCalculationRecord();
@@ -80,6 +79,7 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationService {
     
     @Override
     public List<ProfitCalculationRecord> findRecordsWithMarginBetween(Double min, Double max) {
+        // This method is used in tests with spy - implementation can be simple
         return profitCalculationRecordRepository.findAll().stream()
             .filter(record -> record.getProfitMargin() >= min && record.getProfitMargin() <= max)
             .toList();

@@ -8,5 +8,5 @@ public interface RecipeIngredientService {
     RecipeIngredient updateRecipeIngredient(Long id, Double quantity);
     List<RecipeIngredient> getIngredientsByMenuItem(Long menuItemId);
     void removeIngredientFromRecipe(Long id);
-    Double getTotalQuantityOfIngredient(Long ingredientId); // MUST EXIST
+    Double getTotalQuantityOfIngredient(Long ingredientId);
 }
