@@ -27,18 +27,18 @@ public class MenuItemServiceImpl implements MenuItemService {
     @Override
     @Transactional
     public MenuItem createMenuItem(MenuItem item) {
-        // Validate price
+        // Validate price > 0
         if (item.getSellingPrice() == null || item.getSellingPrice().compareTo(java.math.BigDecimal.ZERO) <= 0) {
             throw new BadRequestException("Selling price must be greater than 0");
         }
         
         // Check for duplicate name
-        menuItemRepository.findByNameIgnoreCase(item.getName())
+        menuItemRepository.findByNameIgnoreCase(item.getName().trim())
             .ifPresent(existing -> {
                 throw new BadRequestException("Menu item with name '" + item.getName() + "' already exists");
             });
         
-        // Process categories
+        // Process categories if provided
         if (item.getCategories() != null && !item.getCategories().isEmpty()) {
             Set<Category> validCategories = new HashSet<>();
             for (Category category : item.getCategories()) {
@@ -52,9 +52,12 @@ public class MenuItemServiceImpl implements MenuItemService {
                 validCategories.add(existingCategory);
             }
             item.setCategories(validCategories);
+        } else {
+            item.setCategories(new HashSet<>());
         }
         
-        item.setActive(false); // Default to inactive until recipe ingredients are added
+        // New menu items are inactive by default until they have recipe ingredients
+        item.setActive(false);
         return menuItemRepository.save(item);
     }
     
@@ -74,7 +77,7 @@ public class MenuItemServiceImpl implements MenuItemService {
         
         // Check for duplicate name if name is being changed
         if (updatedItem.getName() != null && !updatedItem.getName().equalsIgnoreCase(existing.getName())) {
-            menuItemRepository.findByNameIgnoreCase(updatedItem.getName())
+            menuItemRepository.findByNameIgnoreCase(updatedItem.getName().trim())
                 .ifPresent(duplicate -> {
                     throw new BadRequestException("Menu item with name '" + updatedItem.getName() + "' already exists");
                 });
@@ -85,17 +88,17 @@ public class MenuItemServiceImpl implements MenuItemService {
             existing.setDescription(updatedItem.getDescription());
         }
         
-        // Handle activation
+        // Handle activation - cannot activate without recipe ingredients
         if (updatedItem.isActive() && !existing.isActive()) {
             if (!recipeIngredientRepository.existsByMenuItemId(id)) {
                 throw new BadRequestException("Cannot activate menu item without recipe ingredients");
             }
             existing.setActive(true);
-        } else if (!updatedItem.isActive()) {
+        } else if (!updatedItem.isActive() && existing.isActive()) {
             existing.setActive(false);
         }
         
-        // Update categories
+        // Update categories if provided
         if (updatedItem.getCategories() != null) {
             Set<Category> validCategories = new HashSet<>();
             for (Category category : updatedItem.getCategories()) {

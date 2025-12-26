@@ -26,7 +26,7 @@ public class RecipeIngredientServiceImpl implements RecipeIngredientService {
     @Override
     @Transactional
     public RecipeIngredient addIngredientToMenuItem(RecipeIngredient recipeIngredient) {
-        // Validate quantity
+        // Validate quantity > 0
         if (recipeIngredient.getQuantityRequired() == null || recipeIngredient.getQuantityRequired() <= 0) {
             throw new BadRequestException("Quantity must be greater than 0");
         }

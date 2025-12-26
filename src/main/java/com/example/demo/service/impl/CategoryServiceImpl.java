@@ -21,7 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public Category createCategory(Category category) {
         // Check for duplicate name
-        categoryRepository.findByNameIgnoreCase(category.getName())
+        categoryRepository.findByNameIgnoreCase(category.getName().trim())
             .ifPresent(existing -> {
                 throw new BadRequestException("Category with name '" + category.getName() + "' already exists");
             });
@@ -37,14 +37,14 @@ public class CategoryServiceImpl implements CategoryService {
             .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
         
         // Check for duplicate name if name is being changed
-        if (!existing.getName().equalsIgnoreCase(updatedCategory.getName())) {
-            categoryRepository.findByNameIgnoreCase(updatedCategory.getName())
+        if (!existing.getName().equalsIgnoreCase(updatedCategory.getName().trim())) {
+            categoryRepository.findByNameIgnoreCase(updatedCategory.getName().trim())
                 .ifPresent(duplicate -> {
                     throw new BadRequestException("Category with name '" + updatedCategory.getName() + "' already exists");
                 });
+            existing.setName(updatedCategory.getName());
         }
         
-        existing.setName(updatedCategory.getName());
         existing.setDescription(updatedCategory.getDescription());
         
         return categoryRepository.save(existing);

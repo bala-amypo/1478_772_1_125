@@ -21,12 +21,12 @@ public class IngredientServiceImpl implements IngredientService {
     @Transactional
     public Ingredient createIngredient(Ingredient ingredient) {
         // Check for duplicate name
-        ingredientRepository.findByNameIgnoreCase(ingredient.getName())
+        ingredientRepository.findByNameIgnoreCase(ingredient.getName().trim())
             .ifPresent(existing -> {
                 throw new BadRequestException("Ingredient with name '" + ingredient.getName() + "' already exists");
             });
         
-        // Validate cost per unit
+        // Validate cost per unit > 0
         if (ingredient.getCostPerUnit() == null || ingredient.getCostPerUnit().compareTo(java.math.BigDecimal.ZERO) <= 0) {
             throw new BadRequestException("Cost per unit must be greater than 0");
         }
@@ -42,19 +42,19 @@ public class IngredientServiceImpl implements IngredientService {
             .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found with id: " + id));
         
         // Check for duplicate name if name is being changed
-        if (!existing.getName().equalsIgnoreCase(updated.getName())) {
-            ingredientRepository.findByNameIgnoreCase(updated.getName())
+        if (!existing.getName().equalsIgnoreCase(updated.getName().trim())) {
+            ingredientRepository.findByNameIgnoreCase(updated.getName().trim())
                 .ifPresent(duplicate -> {
                     throw new BadRequestException("Ingredient with name '" + updated.getName() + "' already exists");
                 });
+            existing.setName(updated.getName());
         }
         
-        // Validate cost per unit
+        // Validate cost per unit > 0
         if (updated.getCostPerUnit() == null || updated.getCostPerUnit().compareTo(java.math.BigDecimal.ZERO) <= 0) {
             throw new BadRequestException("Cost per unit must be greater than 0");
         }
         
-        existing.setName(updated.getName());
         existing.setUnit(updated.getUnit());
         existing.setCostPerUnit(updated.getCostPerUnit());
         

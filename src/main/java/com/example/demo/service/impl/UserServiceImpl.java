@@ -20,17 +20,17 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User register(RegisterRequest request) {
-        // Check if email already exists
-        userRepository.findByEmailIgnoreCase(request.getEmail())
+        // Check if email already exists - MUST use exact message "Email already in use"
+        userRepository.findByEmailIgnoreCase(request.getEmail().trim())
             .ifPresent(existing -> {
                 throw new BadRequestException("Email already in use");
             });
         
         User user = new User();
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
+        user.setFullName(request.getFullName().trim());
+        user.setEmail(request.getEmail().trim());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole() != null ? request.getRole() : "USER");
+        user.setRole(request.getRole() != null ? request.getRole().trim() : "USER");
         user.setActive(true);
         
         return userRepository.save(user);
