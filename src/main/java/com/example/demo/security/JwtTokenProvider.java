@@ -15,46 +15,47 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private final SecretKey key;
-    private final long validityInMs;
+        private final long validityInMs;
 
-    public JwtTokenProvider(
-            @Value("${jwt.secret}") String secret,
-            @Value("${jwt.expiration}") long validityInMs) {
+            public JwtTokenProvider(
+                        @Value("${jwt.secret}") String secret,
+                                    @Value("${jwt.expiration}") long validityInMs) {
 
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.validityInMs = validityInMs;
-    }
+                                            this.key = Keys.hmacShaKeyFor(secret.getBytes());
+                                                    this.validityInMs = validityInMs;
+                                                        }
 
-    public String generateToken(Authentication authentication, User user) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + validityInMs);
+                                                            public String generateToken(Authentication authentication, User user) {
+                                                                    Date now = new Date();
+                                                                            Date expiryDate = new Date(now.getTime() + validityInMs);
 
-        return Jwts.builder()
-                .setSubject(user.getEmail())
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-    }
+                                                                                    return Jwts.builder()
+                                                                                                    .setSubject(user.getEmail())
+                                                                                                                    .setIssuedAt(now)
+                                                                                                                                    .setExpiration(expiryDate)
+                                                                                                                                                    .signWith(key, SignatureAlgorithm.HS256)
+                                                                                                                                                                    .compact();
+                                                                                                                                                                        }
 
-    public String getUsernameFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
+                                                                                                                                                                            public String getUsernameFromToken(String token) {
+                                                                                                                                                                                    return Jwts.parserBuilder()
+                                                                                                                                                                                                    .setSigningKey(key)
+                                                                                                                                                                                                                    .build()
+                                                                                                                                                                                                                                    .parseClaimsJws(token)
+                                                                                                                                                                                                                                                    .getBody()
+                                                                                                                                                                                                                                                                    .getSubject();
+                                                                                                                                                                                                                                                                        }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-}
+                                                                                                                                                                                                                                                                            public boolean validateToken(String token) {
+                                                                                                                                                                                                                                                                                    try {
+                                                                                                                                                                                                                                                                                                Jwts.parserBuilder()
+                                                                                                                                                                                                                                                                                                                    .setSigningKey(key)
+                                                                                                                                                                                                                                                                                                                                        .build()
+                                                                                                                                                                                                                                                                                                                                                            .parseClaimsJws(token);
+                                                                                                                                                                                                                                                                                                                                                                        return true;
+                                                                                                                                                                                                                                                                                                                                                                                } catch (Exception e) {
+                                                                                                                                                                                                                                                                                                                                                                                            return false;
+                                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                                                                                                                                        
